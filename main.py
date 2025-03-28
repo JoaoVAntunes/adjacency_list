@@ -39,7 +39,7 @@ def main():
     G.toString()
 
     print("\n### Testando remoção de vértice (Maria) ###")
-    G.remove_vertice("Maria")
+    G.remove_node("Maria")
     G.toString()
 
 if __name__ == "__main__":

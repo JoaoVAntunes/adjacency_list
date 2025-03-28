@@ -27,8 +27,8 @@ class Graph:
             self.add_node(v)
 
         # Verifies an existing edge, if already exists updates the wieght
-        for i, (vertice, p) in enumerate(self.adj_list[u]):
-            if vertice == v:
+        for i, (node, p) in enumerate(self.adj_list[u]):
+            if node == v:
                 self.adj_list[u][i] = (v, weight)  
                 print(f"Edge between '{u}' and '{v}' updated successfully!")
                 return
@@ -38,16 +38,16 @@ class Graph:
         print(f"Edge between '{u}' and '{v}' added successfully!")
 
     #function to remove a node
-    def remove_vertice(self, u):
+    def remove_node(self, u):
         if u not in self.adj_list:
             print(f"Vértice '{u}' não existe.")
             return
 
         # 1. Removes the in degrees edges
-        for vertice in list(self.adj_list):  #converting to a list in order to avoid the loop dictionary loop
-            original_len = len(self.adj_list[vertice])
-            self.adj_list[vertice] = [(v, peso) for v, peso in self.adj_list[vertice] if v != u]
-            self.size -= original_len - len(self.adj_list[vertice])
+        for node in list(self.adj_list):  #converting to a list in order to avoid the loop dictionary error
+            original_len = len(self.adj_list[node])
+            self.adj_list[node] = [(v, peso) for v, peso in self.adj_list[node] if v != u]
+            self.size -= original_len - len(self.adj_list[node])
 
         # 2. Removes the out degrees edges
         self.size -= len(self.adj_list[u]) 
