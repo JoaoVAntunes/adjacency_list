@@ -9,16 +9,17 @@ class Graph:
     def add_node(self, u: str):
         if u in self.adj_list:
             print(f"Node '{u}' already exists.")
-            return
+            return False
         else:
             self.adj_list[u] = []  
             self.order += 1
             print(f"Node '{u}' added successfully.")
+            return True
 
     def add_edge(self, u : str, v: str, weight: int):  
         if weight < 0:
             print("Invalid weight.")
-            return
+            return False
 
         if u not in self.adj_list:
             self.add_node(u)
@@ -27,27 +28,28 @@ class Graph:
             self.add_node(v)
 
         # Verifies an existing edge, if already exists updates the wieght
-        for i, (node, p) in enumerate(self.adj_list[u]):
-            if node == v:
+        for i, (vertice, p) in enumerate(self.adj_list[u]):
+            if vertice == v:
                 self.adj_list[u][i] = (v, weight)  
                 print(f"Edge between '{u}' and '{v}' updated successfully!")
-                return
+                return True
         
         self.adj_list[u].append((v, weight))
         self.size += 1
         print(f"Edge between '{u}' and '{v}' added successfully!")
+        return True
 
     #function to remove a node
     def remove_node(self, u):
         if u not in self.adj_list:
             print(f"Vértice '{u}' não existe.")
-            return
+            return False
 
         # 1. Removes the in degrees edges
-        for node in list(self.adj_list):  #converting to a list in order to avoid the loop dictionary error
-            original_len = len(self.adj_list[node])
-            self.adj_list[node] = [(v, peso) for v, peso in self.adj_list[node] if v != u]
-            self.size -= original_len - len(self.adj_list[node])
+        for vertice in list(self.adj_list):  #converting to a list in order to avoid the loop dictionary loop
+            original_len = len(self.adj_list[vertice])
+            self.adj_list[vertice] = [(v, peso) for v, peso in self.adj_list[vertice] if v != u]
+            self.size -= original_len - len(self.adj_list[vertice])
 
         # 2. Removes the out degrees edges
         self.size -= len(self.adj_list[u]) 
@@ -56,25 +58,30 @@ class Graph:
         self.order -= 1
 
         print(f"Vértice '{u}' e todas as suas arestas foram removidas com sucesso.")
+        return True
 
     #function to remove an edge
     def remove_edge(self, u, v):
         if u not in self.adj_list:
             print(f"Node '{u}' does not exist.")
-            return
+            return False
         
         for i, (neighboor, weight) in enumerate(self.adj_list[u]):
             if neighboor == v:
                 del self.adj_list[u][i]
                 self.size -= 1
                 print("Edge was removed!")
-                return
+                return True
 
         print(f"Aresta de '{u}' para '{v}' não existe.")
+        return False
 
     #Verifies if the nodes have and adge in between
     def edge_between(self, u: str, v: str):
         #List Comprehension: "for node, weight in self..." percorre this tuple list trying to find a node equals "v"
+        if u not in self.adj_list:
+            print(f"Node '{u}' does not exist.")
+            return False
         return any(node == v for node, _ in self.adj_list[u])
 
     #Verifies if the node has any edges
@@ -114,10 +121,15 @@ class Graph:
             return None
         
         total_deg = in_deg + out_deg
+        print(f"The node degree is: {total_deg}")
         return total_deg
     
     #function to get the weight of an edge
     def get_weight(self, u, v):
+        if u not in self.adj_list:
+            print(f"Node '{u}' does not exist.")
+            return None
+
         for neighboor, weight in self.adj_list[u]:
             if neighboor == v:
                 return weight
@@ -128,6 +140,7 @@ class Graph:
         print("\nGraph representation:\n")
         for node, edges in self.adj_list.items():
             if edges:
-                print(f"Node {node}: {''.join([f'({v}, {w}) -> ' for v, w in edges])}")
+                output = " -> ".join([f"('{v}', {w})" for v, w in edges]) + " ->"
+                print(f"{node}: {output}")
             else:
-                print(f"Node {node}: No edges.")
+                print(f"{node}:")
